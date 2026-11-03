@@ -88,8 +88,6 @@ src/
     └── theme.js # 기존 파일 유지
 ```
 
-`src/constants`는 기존 내용 그대로 유지합니다.
-
 ## 제출물
 
 - 소스 코드: `src/app`, `src/components`, `src/hooks`, `src/constants` 및 실행에 필요한 설정 파일
