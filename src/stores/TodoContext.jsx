@@ -10,8 +10,6 @@ import {
 const TodoContext = createContext(null);
 const canSync = (state) => state.isConnected === true && state.isInternetReachable !== false;
 
-// Guard against a stale synchronizer from Fast Refresh, partial initialization,
-// or an exception inside stop(). A listener callback must never throw here.
 function stopSynchronizer(engine) {
   if (!engine) return;
   if (typeof engine.stop !== 'function') {
@@ -72,8 +70,6 @@ export function TodoProvider({ children }) {
           if (!live) return;
           try {
             const uid = authUser?.uid ?? null;
-            // Repeated auth notifications for the same user must not tear down
-            // a working Firestore listener / sync engine.
             if (uid && userRef.current === uid && syncRef.current) {
               setUser(authUser);
               return;
@@ -94,9 +90,6 @@ export function TodoProvider({ children }) {
 
             if (!uid) {
               setReady(true);
-              // Start anonymous sign-in ONLY after the initial auth state was
-              // restored. Calling it immediately after subscribeAuth() can
-              // race with restoration of a previously persisted session.
               void ensureAnonymousUser().catch((err) => {
                 if (!live || gen !== initId.current) return;
                 setError(err?.message || '익명 인증에 실패했습니다.');
@@ -128,7 +121,6 @@ export function TodoProvider({ children }) {
                 setReady(true);
               } catch (err) {
                 if (live && gen === initId.current) {
-                  // Do not leave a half-started engine attached.
                   const broken = syncRef.current;
                   syncRef.current = null;
                   stopSynchronizer(broken);
@@ -139,8 +131,6 @@ export function TodoProvider({ children }) {
               }
             })();
           } catch (err) {
-            // React Native Firebase invokes callbacks asynchronously: an
-            // uncaught throw here becomes an unhandled promise rejection.
             console.error('[TodoContext] 인증 상태 처리 오류:', err);
             setError(err?.message || '인증 상태 처리 실패');
             setSyncStatus('error');
