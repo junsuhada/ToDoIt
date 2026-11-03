@@ -1,5 +1,6 @@
 {
   "expo": {
+    "scheme": "todoit",
     "name": "todo-it",
     "slug": "todo-it",
     "version": "1.0.0",
@@ -7,9 +8,13 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.junsuhada.todoit",
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
+      "package": "com.junsuhada.todoit",
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -19,6 +24,29 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-status-bar",
+      [
+        "./plugins/withFirebaseBom.js",
+        {
+          "bom": "34.19.0"
+        }
+      ],
+      "@react-native-firebase/app",
+      "expo-sqlite",
+      "@react-native-firebase/auth"
+    ],
+    "extra": {
+      "router": {
+        "asyncRoutes": {
+          "web": true
+        }
+      },
+      "eas": {
+        "projectId": "bd434a57-94c2-4a1d-b251-3f8115baa08a"
+      }
     }
   }
 }
