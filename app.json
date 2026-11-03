@@ -9,12 +9,10 @@
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.junsuhada.todoit",
-      "googleServicesFile": "./GoogleService-Info.plist"
+      "bundleIdentifier": "com.junsuhada.todoit"
     },
     "android": {
       "package": "com.junsuhada.todoit",
-      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -27,16 +25,7 @@
     },
     "plugins": [
       "expo-router",
-      "expo-status-bar",
-      [
-        "./plugins/withFirebaseBom.js",
-        {
-          "bom": "34.19.0"
-        }
-      ],
-      "@react-native-firebase/app",
-      "expo-sqlite",
-      "@react-native-firebase/auth"
+      "expo-status-bar"
     ],
     "extra": {
       "router": {

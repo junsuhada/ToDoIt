@@ -1,217 +1,111 @@
-## 0. 준비
-- Git 설치
-  - 과정 생략
-- Node.js 설치 [최신 버전 링크](https://nodejs.org/en/download?utm_source=chatgpt.com)
-  1. 터미널에 `node -v` 했을 때 버전이 26.13.0 LTS가 아닌 경우 아래 진행
-  2. 링크 접속
-  3. 버전 26.13.0 LTS 지정
-  4. 하단에서 운영체제 선택
-  5. 바로 아래의 .msi 또는 .pkg 파일 설치
-  6. 받은 파일 열어서 설치 진행하면 됨
-- Expo 계정 생성
-  1. Expo 접속
-  2. Google 계정으로 가입(권장)
-    - 다른 방법으로 가입했는데 나중에 로그인 실패하는 경우 본인이 직접 해결해야 함
-- Expo 팀 가입 신청
-  1. 카톡으로 본인 이메일 전송
-  2. 초대
-  3. 각자 초대 수락
-- 앱 설치(Android 전용)
-  1. [설치하기](https://expo.dev/accounts/junsuhadas-team/projects/todo-it/builds/f49f047d-c16f-40be-bb10-fd39ce432d6c)
-  2. 링크 들어가서 Install 클릭
-  3. QR 찍으면 설치 됨
+# To Do it! — 미니프로젝트 #1
 
+## 프로젝트 개요
 
-## 1. 프로젝트 Clone
-#### Windows (PowerShell)
-```shell
-git clone <GitHub 저장소 URL>
+**1단계 — 할 일 앱 화면 만들기**
+
+React Native + Expo Router로 할 일 목록과 추가 입력 UI를 구현했습니다. 할 일 항목은 React의 `useState`로 관리하며 저장 기능은 구현하지 않습니다. 앱을 재시작하면 목록이 초기화됩니다.
+
+## 개발 환경
+
+- JavaScript / JSX
+- React Native + Expo + Expo Router
+- 상태 관리: React `useState`
+- 외부 저장소, Firebase, OCR, 인증: **사용하지 않음**
+
+## 구현 기능
+
+1. 할 일 목록과 완료 상태 표시
+2. 입력창에서 새 할 일 추가 (공백 입력 무시)
+3. 체크박스로 완료 / 미완료 토글 및 즉시 UI 갱신
+4. 목록이 비어 있으면 빈 상태 안내 표시
+5. 전체·완료·남은 할 일 개수 및 달성률 UI 표시
+
+수정, 삭제, 필터, 저장, 동기화, OCR은 MP1 범위에서 제외했습니다.
+
+## 설치 및 실행
+
+### 사전 준비
+
+- Git, Node.js 및 npm 설치
+- 휴대폰에 **Expo Go** 앱 설치 (iOS/Android)
+
+### Windows (PowerShell)
+
+```powershell
+git clone <GitHub 저장소 주소>
 cd ToDoIt
-```
-
-
-#### macOS (Terminal)
-```shell
-git clone <GitHub 저장소 URL>
-cd ToDoIt
-```
-
-GitHub에서 프로젝트를 다운로드하고 프로젝트 디렉터리로 이동한다.
-
-
-## 2. 패키지 설치
-#### Windows
-```shell
 npm.cmd ci
+npx.cmd expo start --go
 ```
 
-#### macOS
-```shell
+### macOS (Terminal)
+
+```bash
+git clone <GitHub 저장소 주소>
+cd ToDoIt
 npm ci
+npx expo start --go
 ```
 
-package-lock.json에 기록된 버전으로 프로젝트 의존성을 설치한다.
+프로젝트 담당자가 `package-lock.json`을 최신 상태로 커밋해야 `npm ci`가 정상 작동합니다. `src/app`은 Expo Router의 라우트 디렉터리이며 `package.json`의 진입점은 `expo-router/entry`입니다.
 
-package-lock.json이 없는 경우에는 npm install을 사용한다.
+### 실행 방식
 
+1. 휴대폰과 개발 PC를 같은 네트워크에 연결합니다.
+2. `expo start --go` 실행 후 QR 코드를 확인합니다.
+3. Android에서는 Expo Go, iOS에서는 카메라로 QR을 열어 앱을 실행합니다.
+4. iPhone에서 Expo Go 계정 오류가 발생하면 Expo CLI와 Expo Go에 동일 계정으로 로그인합니다.
 
-## 3. 환경 설정
-구글 드라이브의 Secure 폴더의 파일 2개를 전부 다운 받아서 루트에 위치
+## 화면 구성
 
-- GoogleService-Info.plist
-- google-services.json
+| 화면/상태 | 설명 |
+|---|---|
+| 대시보드/목록 | 앱 이름·날짜·달성률·할 일 개수·할 일 목록 표시 |
+| 추가 입력 | 텍스트 입력 및 `+` 버튼으로 목록에 항목 추가 |
+| 완료 상태 | 체크 시 완료 표시·취소선·달성률 즉시 갱신 |
+| 빈 상태 | 할 일이 없을 때 안내 문구 표시 |
 
+## 폴더 구조
 
-## 4. Expo
-### 4-1. 최초 로그인
-#### Windows
-```shell
-npx.cmd eas-cli@latest login --browser
+```text
+src/
+├── app/
+│   ├── _layout.jsx
+│   └── index.jsx
+├── components/
+│   ├── TodoRow.jsx
+│   ├── EmptyState.jsx
+│   └── home/
+│       ├── TodoScreen.jsx
+│       ├── HomeOverview.jsx
+│       ├── TodoListSection.jsx
+│       └── TodoInputSection.jsx
+├── hooks/
+│   └── useHomeTodos.js
+└── constants/
+    ├── app.js   # 기존 파일 유지
+    └── theme.js # 기존 파일 유지
 ```
 
-#### macOS
-```shell
-npx eas-cli@latest login --browser
-```
+`src/constants`는 기존 내용 그대로 유지합니다.
 
-- 로그인하는 브라우저가 열리면 가입했던 방식으로 로그인
+## 제출물
 
+- 소스 코드: `src/app`, `src/components`, `src/hooks`, `src/constants` 및 실행에 필요한 설정 파일
+- `README.md`: 이 문서
+- `prompts_log.md`: AI 요청 및 채택·수정 판단 기록
+- `screenshots/`: 실제 앱 화면 캡처 **목록·추가·완료·빈 상태 각 1장 이상**
 
-### 4-2. 로그인 확인
-#### Windows:
-```shell
-npx.cmd expo whoami
-```
+## 보안 및 민감정보
 
-#### macOS:
-```shell
-npx expo whoami
-```
+Firebase 및 외부 인증 설정을 사용하지 않습니다. `.env`, `google-services.json`, `GoogleService-Info.plist`, 인증 토큰, API 키, 계정 비밀번호 등 민감한 항목은 제출하지 않습니다. `.gitignore` 규칙을 확인합니다.
 
-### 4-3. 로그아웃
-#### Windows:
-```shell
-npx.cmd expo logout
-```
+## 테스트 체크리스트
 
-#### macOS:
-```shell
-npx expo logout
-```
-
-### 4-4. 세션 만료 후 재로그인
-#### Windows:
-```shell
-npx.cmd expo login
-```
-
-#### macOS:
-```shell
-npx expo login
-```
-
-## 5. 개발 서버 실행
-프로젝트 루트에서 실행
-#### Windows
-```shell
-npx.cmd expo start --dev-client --tunnel
-```
-
-#### macOS
-```shell
-npx expo start --dev-client --tunnel
-```
-- --dev-client: Expo Go가 아닌 프로젝트 전용 Development Build 사용
-- --tunnel: 인터넷을 통해 개발 PC와 휴대폰 연결
-- --lan: 동일한 Wi-Fi 환경에서 개발 PC와 휴대폰 연결
-- --clear: Metro 캐시 초기화(수정 반영이 안 되면 사용)
-
-
-## 6. 개발 중 실시간 화면 확인
-##### Windows & Android
-1. 0번 준비 단계에서 제공한 APK 설치 링크 접속
-1. Install 클릭 후 QR 코드로 APK 다운로드
-2. 다운로드한 APK 파일 실행
-3. 필요한 경우 해당 브라우저 또는 파일 관리자의 '알 수 없는 앱 설치' 권한 허용
-4. 설치 완료 후 To Do it! 실행
-5. `5. 개발 서버 실행` 참고해서 서버 실행
-6. 터미널에 출력된 QR 코드 스캔
-7. 설치된 To Do it! 앱으로 연결
-
-##### Mac & iOS
-실제 iPhone 대신 Mac의 iOS 시뮬레이터에서 앱 실행
-1. Mac App Store에서 Xcode 설치
-2. Xcode에서 iOS Simulator 및 필요한 iOS 런타임 설치
-3. 프로젝트 루트에 GoogleService-Info.plist가 있는지 확인
-4. Xcode 및 CocoaPods 개발 환경 설정
-5. 최초 실행
-```shell
-npx expo run:ios
-```
-5. iOS 네이티브 앱 빌드
-5. iOS Simulator에 앱 설치 및 실행
-6. 최초 실행 시 빌드 시간이 소요될 수 있음
-7. 이후 실행은 아래 명령
-```shell
-npx expo start --dev-client
-```
-※ 시뮬레이터에서는 실제 카메라 촬영 기능을 테스트할 수 없으므로 OCR 촬영 기능은 실기기 테스트가 필요함.
-
-##### iii) Windows & iOS
-Windows에서는 Xcode를 실행할 수 없으므로 Web 환경을 통한 UI 개발을 권장함.
-1. 웹 실행
-```shell
-npx.cmd expo start --web
-```
-
-##### iv) Mac & Android
-생략
-
-
-### 6-1. 새 APK를 직접 빌드해야 하는 경우(읽을 필요 없음)
-#### Windows
-```shell
-npx.cmd eas-cli@latest build --platform android --profile development
-```
-
-#### macOS
-```shell
-npx eas-cli@latest build --platform android --profile development
-```
-
-
-## Development Build 재생성 (선택)
-
-일반적인 개발 과정에서는 실행할 필요 없음.
-
-다음 상황에서 새로운 Development Build가 필요할 수 있음.
-
-네이티브 라이브러리를 추가하거나 변경한 경우
-
-Android/iOS 네이티브 설정을 변경한 경우
-
-기존 개발용 앱에 필요한 네이티브 모듈이 포함되지 않은 경우
-
-> 다만 앞으로 변경될 이유가 없으므로 현재 필요 없음
-
-#### Windows
-```shell
-npx.cmd eas-cli@latest build --platform android --profile development
-```
-
-#### macOS
-```shell
-npx eas-cli@latest build --platform android --profile development
-```
-
-코드를 변경했는데 실시간으로 앱에 반영되지 않으면 캐시 초기화
-
-#### Windows
-```shell
-npx.cmd eas-cli@latest build --platform ios --profile development
-```
-
-#### macOS
-```shell
-npx eas-cli@latest build --platform ios --profile development
-```
+- [ ] 최초 실행 시 빈 목록 문구 표시
+- [ ] 새 할 일 추가 시 목록 즉시 변경
+- [ ] 완료 체크 및 해제 시 상태 즉시 변경
+- [ ] 전체·완료·남은 개수 및 달성률 업데이트
+- [ ] 실행 절차와 기능 목록 문서화
+- [ ] 실제 화면 4종 캡처
