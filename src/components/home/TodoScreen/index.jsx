@@ -1,14 +1,22 @@
-import { ScrollView, StyleSheet } from 'react-native';
+import { ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { colors as c } from '@/constants/theme';
+
 import useHomeTodos from '@/hooks/useHomeTodos';
-import HomeOverview from './HomeOverview';
-import TodoListSection from './TodoListSection';
-import TodoInputSection from './TodoInputSection';
+import HomeOverview from '../HomeOverview';
+import TodoInputSection from '../TodoInputSection';
+import TodoListSection from '../TodoListSection';
+
+import { styles } from './styles';
 
 export default function TodoScreen() {
   const {
-    todos, title, setTitle, countDone, progress, addTodo, toggleTodo,
+    todos,
+    title,
+    setTitle,
+    countDone,
+    progress,
+    addTodo,
+    toggleTodo,
   } = useHomeTodos();
 
   return (
@@ -23,7 +31,12 @@ export default function TodoScreen() {
           countDone={countDone}
           progress={progress}
         />
-        <TodoListSection todos={todos} onToggle={toggleTodo} />
+
+        <TodoListSection
+          todos={todos}
+          onToggle={toggleTodo}
+        />
+
         <TodoInputSection
           title={title}
           onChangeTitle={setTitle}
@@ -33,9 +46,3 @@ export default function TodoScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: c.background },
-  page: { flex: 1 },
-  scrollContent: { padding: 20, paddingBottom: 50 },
-});

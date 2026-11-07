@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react';
 
-// MP1: 앱 실행 중에만 목록을 관리합니다. 저장·동기화는 구현하지 않습니다.
 export default function useHomeTodos() {
   const [todos, setTodos] = useState([]);
   const [title, setTitle] = useState('');

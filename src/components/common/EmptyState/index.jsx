@@ -1,0 +1,15 @@
+import { Text, View } from 'react-native';
+import { styles } from './styles';
+
+export default function EmptyState() {
+  return (
+    <View style={styles.wrap}>
+      <View style={styles.illustration}>
+        <Text style={styles.symbol}>✓</Text>
+      </View>
+
+      <Text style={styles.title}>아직 등록된 할 일이 없어요</Text>
+      <Text style={styles.desc}>오늘 해야 할 일을 하나 추가해 볼까요?</Text>
+    </View>
+  );
+}
