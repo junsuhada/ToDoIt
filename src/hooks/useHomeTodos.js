@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   loadTodos, addStoredTodo, editStoredTodo, toggleStoredTodo, removeStoredTodo,
 } from '@/services/local/todoStorage';
+import useTodoSync from './useTodoSync';
 
 export default function useHomeTodos() {
   const [todos, setTodos] = useState([]);
@@ -12,7 +13,6 @@ export default function useHomeTodos() {
   const [reloadKey, setReloadKey] = useState(0);
 
   const queueRef = useRef(Promise.resolve());
-  const nextId = useRef(0);
   const addingRef = useRef(false);
   const readyRef = useRef(false);
 
@@ -42,20 +42,33 @@ export default function useHomeTodos() {
 
   const retryLoad = () => setReloadKey((key) => key + 1);
 
+  const refresh = useCallback(async () => {
+    const latest = await loadTodos();
+    setTodos(latest);
+    return latest;
+  }, []);
+
+  const enqueue = useCallback((write) => {
+    const operation = queueRef.current.then(write);
+    queueRef.current = operation.catch(() => {});
+    return operation;
+  }, []);
+
+  const sync = useTodoSync({ ready, enqueue, refresh });
+
   const persistChange = useCallback((write) => {
-    const operation = queueRef.current.then(async () => {
+    const operation = enqueue(async () => {
       if (!readyRef.current) throw new Error('할 일 목록을 불러오는 중입니다.');
       await write();
-      const latest = await loadTodos();
-      setTodos(latest);
+      await refresh();
       setSaveError('');
     });
-    queueRef.current = operation.catch(() => {});
+    void operation.then(sync.onLocalChange).catch(() => {});
     return operation.catch((error) => {
       setSaveError(error?.message || 'SQLite 저장에 실패했습니다.');
       throw error;
     });
-  }, []);
+  }, [enqueue, refresh, sync.onLocalChange]);
 
   const addTodo = async () => {
     const trimmed = title.trim();
@@ -64,7 +77,7 @@ export default function useHomeTodos() {
     try {
       const currentTitle = title;
       const todo = {
-        id: `${Date.now()}-${++nextId.current}`,
+        id: `${Date.now()}-${Math.random().toString(36).slice(2, 12)}`,
         title: trimmed,
         completed: false,
       };
@@ -89,6 +102,11 @@ export default function useHomeTodos() {
   return {
     todos, title, setTitle, countDone, progress,
     ready, loadError, saveError, retryLoad,
+    online: sync.online,
+    syncStatus: sync.syncStatus,
+    syncError: sync.syncError,
+    pendingCount: sync.pendingCount,
+    syncNow: sync.syncNow,
     addTodo, toggleTodo, editTodo, removeTodo,
   };
 }

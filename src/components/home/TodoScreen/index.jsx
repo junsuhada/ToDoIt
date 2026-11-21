@@ -8,12 +8,14 @@ import TodoListSection from '../TodoListSection';
 import AddTodoModal from '../AddTodoModal';
 import EditTodoModal from '../EditTodoModal';
 import DeleteTodoModal from '../DeleteTodoModal';
+import SyncStatus from '../SyncStatus';
 import { styles } from './styles';
 
 export default function TodoScreen() {
   const {
     todos, title, setTitle, countDone, progress,
     ready, loadError, saveError, retryLoad,
+    online, syncStatus, syncError, pendingCount, syncNow,
     addTodo, toggleTodo, editTodo, removeTodo,
   } = useHomeTodos();
 
@@ -59,6 +61,13 @@ export default function TodoScreen() {
           countDone={countDone}
           progress={progress}
           onAdd={() => setAdding(true)}
+        />
+        <SyncStatus
+          online={online}
+          status={syncStatus}
+          error={syncError}
+          pendingCount={pendingCount}
+          onRefresh={() => { void syncNow().catch(() => {}); }}
         />
         <TodoListSection
           todos={todos}

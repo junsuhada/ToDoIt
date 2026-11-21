@@ -9,10 +9,12 @@
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.junsuhada.todoit"
+      "bundleIdentifier": "com.junsuhada.todoit",
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "package": "com.junsuhada.todoit",
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",

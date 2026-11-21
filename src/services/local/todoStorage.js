@@ -4,6 +4,9 @@ import {
   updateTodoTitle as updateTitle, toggleTodoCompleted as toggleRow,
   deleteTodo as deleteRow,
 } from './todoRepository.mjs';
+import {
+  selectPendingTodos, countPendingTodos, acknowledgeUpload, mergeServerSnapshot,
+} from './todoSyncRepository.mjs';
 
 export const TODO_DATABASE_NAME = 'todo-it-mp2.db';
 let databasePromise = null;
@@ -40,4 +43,20 @@ export async function toggleStoredTodo(id) {
 
 export async function removeStoredTodo(id) {
   return deleteRow(await getDatabase(), id);
+}
+
+export async function loadPendingTodos() {
+  return selectPendingTodos(await getDatabase());
+}
+
+export async function getPendingCount() {
+  return countPendingTodos(await getDatabase());
+}
+
+export async function acknowledgeStoredUpload(todo) {
+  return acknowledgeUpload(await getDatabase(), todo);
+}
+
+export async function applyRemoteTodos(remoteTodos) {
+  return mergeServerSnapshot(await getDatabase(), remoteTodos);
 }
