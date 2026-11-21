@@ -1,7 +1,7 @@
 import { Pressable, Text, View } from 'react-native';
 import { styles } from './styles';
 
-export default function TodoRow({ todo, onToggle, onEdit, onRemove }) {
+export default function TodoRow({ todo, onToggle }) {
   return (
     <View style={styles.card}>
       <Pressable
@@ -11,25 +11,27 @@ export default function TodoRow({ todo, onToggle, onEdit, onRemove }) {
         onPress={onToggle}
         style={[styles.checkbox, todo.completed && styles.checked]}
       >
-        {todo.completed && <Text style={styles.checkmark}>✓</Text>}
+        {todo.completed && (
+          <Text style={styles.checkmark}>✓</Text>
+        )}
       </Pressable>
-      <Pressable accessibilityRole="button" onPress={onToggle} style={styles.main}>
-        <Text numberOfLines={2} style={[styles.title, todo.completed && styles.finished]}>
+
+      <Pressable
+        accessibilityRole="button"
+        onPress={onToggle}
+        style={styles.main}
+      >
+        <Text
+          numberOfLines={2}
+          style={[styles.title, todo.completed && styles.finished]}
+        >
           {todo.title}
         </Text>
-        <Text style={styles.subtitle}>{todo.completed ? '완료했어요' : '진행 중'}</Text>
+
+        <Text style={styles.subtitle}>
+          {todo.completed ? '완료했어요' : '진행 중'}
+        </Text>
       </Pressable>
-      <View style={styles.actions}>
-        {
-          !todo.completed &&
-            <Pressable accessibilityRole="button" accessibilityLabel={`${todo.title} 수정`} onPress={onEdit} style={styles.actionButton}>
-              <Text style={styles.actionText}>수정</Text>
-            </Pressable>
-        }
-        <Pressable accessibilityRole="button" accessibilityLabel={`${todo.title} 삭제`} onPress={onRemove} style={styles.actionButton}>
-          <Text style={styles.deleteText}>삭제</Text>
-        </Pressable>
-      </View>
     </View>
   );
 }
